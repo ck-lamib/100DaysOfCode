@@ -14,6 +14,11 @@ class _CounterPageState extends State<CounterPage> {
   Widget build(BuildContext context) {
     return Center(
       child: Count(
+        counter: (incommingValue) {
+          setState(() {
+            value += incommingValue;
+          });
+        },
         count: value,
         onCountSelected: () => print("The counter value is selected."),
       ),
