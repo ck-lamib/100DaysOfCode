@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+typedef Alias = Function(int);
+
 class Count extends StatelessWidget {
   const Count({super.key, required this.count, this.onCountSelected, required this.counter});
   final int count;
   final VoidCallback? onCountSelected;
-  final Function(int) counter;
+  final Alias counter;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -20,7 +22,7 @@ class Count extends StatelessWidget {
             onPressed: (() {
               counter(-1);
             }),
-            icon: Icon(Icons.remove)),
+            icon: const Icon(Icons.remove)),
       ],
     );
   }

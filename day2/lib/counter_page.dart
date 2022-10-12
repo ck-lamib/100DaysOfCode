@@ -10,15 +10,17 @@ class CounterPage extends StatefulWidget {
 
 class _CounterPageState extends State<CounterPage> {
   int value = 0;
+  void _increment(int incommingValue) {
+    setState(() {
+      value += incommingValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Count(
-        counter: (incommingValue) {
-          setState(() {
-            value += incommingValue;
-          });
-        },
+        counter: _increment,
         count: value,
         onCountSelected: () => print("The counter value is selected."),
       ),
