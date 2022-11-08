@@ -1,3 +1,5 @@
+import 'package:dribbble_design_clone/pages/hell.dart';
+import 'package:dribbble_design_clone/pages/rough.dart';
 import 'package:dribbble_design_clone/widget/exercise_tile.dart';
 import 'package:dribbble_design_clone/widget/mood_icons.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  void hel(value) {
+    print(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,30 +192,31 @@ class _HomePageState extends State<HomePage> {
                     // listview of exercise
                     Expanded(
                       child: ListView(
-                        children: [
-                          ExerciseTile(
-                            emoji: Icons.favorite,
-                            exerciseNum: 16,
-                            exerciseTitle: "Speaking Skills",
-                            backColor: Colors.blue[200],
-                          ),
-                          const ExerciseTile(
-                            emoji: Icons.food_bank_outlined,
-                            exerciseNum: 6,
-                            exerciseTitle: "Proper eating",
-                            backColor: Colors.orange,
-                          ),
-                          const ExerciseTile(
-                            emoji: Icons.run_circle_outlined,
-                            exerciseNum: 18,
-                            exerciseTitle: "Running",
-                            backColor: Colors.green,
-                          ),
+                        children: const [
+                          // ExerciseTile(
+                          //   emoji: Icons.favorite,
+                          //   exerciseNum: 16,
+                          //   exerciseTitle: "Speaking Skills",
+                          //   backColor: Colors.blue[200],
+                          // ),
+                          // const ExerciseTile(
+                          //   emoji: Icons.food_bank_outlined,
+                          //   exerciseNum: 6,
+                          //   exerciseTitle: "Proper eating",
+                          //   backColor: Colors.orange,
+                          // ),
+                          // const ExerciseTile(
+                          //   emoji: Icons.run_circle_outlined,
+                          //   exerciseNum: 18,
+                          //   exerciseTitle: "Running",
+                          //   backColor: Colors.green,
+                          // ),
                           const ExerciseTile(
                             emoji: Icons.girl,
                             exerciseNum: 11,
-                            exerciseTitle: "Girls seceret",
+                            exerciseTitle: "Bipin dai seceret",
                             backColor: Colors.pink,
+                            routeTo: Hell(),
                           ),
                         ],
                       ),

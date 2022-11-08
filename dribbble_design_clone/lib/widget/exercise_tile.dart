@@ -1,3 +1,4 @@
+import 'package:dribbble_design_clone/pages/rough.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseTile extends StatelessWidget {
@@ -5,12 +6,19 @@ class ExerciseTile extends StatelessWidget {
   final String exerciseTitle;
   final int exerciseNum;
   final dynamic backColor;
+  final dynamic routeTo;
   const ExerciseTile(
       {super.key,
       required this.emoji,
       required this.exerciseNum,
       required this.exerciseTitle,
-      required this.backColor});
+      required this.backColor,
+      required this.routeTo});
+
+  void routet(BuildContext context, value) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (BuildContext contex) => const RoughClass()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +46,7 @@ class ExerciseTile extends StatelessWidget {
           "$exerciseNum Exercises",
         ),
         trailing: const Icon(Icons.more_vert),
+        onTap: () => routet(context, routeTo),
       ),
     );
   }
