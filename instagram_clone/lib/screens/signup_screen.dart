@@ -43,15 +43,31 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _isLoading = true;
     });
-    String res = await AuthMethods().signUpUser(
-      userName: _userNameController.text,
-      bio: _bioController.text,
-      password: _passwordController.text,
-      email: _emailController.text,
-      file: _image!,
-    );
-    if (res != 'success') {
-      showSnackBar(context, res);
+    try {
+      String res = await AuthMethods().signUpUsers(
+        userName: _userNameController.text,
+        bio: _bioController.text,
+        password: _passwordController.text,
+        email: _emailController.text,
+        file: _image!,
+      );
+      debugPrint(res);
+      if (res != 'success') {
+        if (!mounted) return;
+        showSnackBar(context, res);
+      } else {
+        setState(() {
+          showSnackBar(context, res);
+          _userNameController.clear();
+          _bioController.clear();
+          _emailController.clear();
+          _passwordController.clear();
+          _image = null;
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      showSnackBar(context, "Please select valid image.");
     }
 
     setState(() {
@@ -95,12 +111,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           radius: 45,
                         ),
                   Positioned(
+                    bottom: -10,
+                    right: -10,
                     child: IconButton(
                       onPressed: () => selectImage(),
                       icon: const Icon(Icons.add_a_photo),
                     ),
-                    bottom: -10,
-                    right: -10,
                   ),
                 ],
               ),

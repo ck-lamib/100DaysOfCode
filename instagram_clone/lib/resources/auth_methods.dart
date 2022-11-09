@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+
 import 'package:instagram_clone/resources/storage_methods.dart';
 
 class AuthMethods {
@@ -9,7 +9,7 @@ class AuthMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 //sign up
-  Future<String> signUpUser({
+  Future<String> signUpUsers({
     required String userName,
     required String bio,
     required String password,
@@ -27,7 +27,9 @@ class AuthMethods {
         UserCredential cred =
             await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
+        debugPrint(cred.user!.uid);
         String photoUrl = await StorageMethods().uploadImageToStorage('ProfilePic', file, false);
+
         // add user to database
         await _firestore.collection('user').doc(cred.user!.uid).set({
           'userName': userName,
@@ -39,13 +41,15 @@ class AuthMethods {
         });
         res = "success";
       }
+    } on FirebaseAuthException catch (error) {
+      res = error.message.toString();
     } catch (e) {
       res = e.toString();
     }
     return res;
   }
 
-  Future<String> loginUser({required String email, required String password}) async {
+  Future<String> loginUsers({required String email, required String password}) async {
     String res = "Some error occured";
     try {
       if (email.isNotEmpty || password.isNotEmpty) {
@@ -54,6 +58,8 @@ class AuthMethods {
       } else {
         res = "Enter all field";
       }
+    } on FirebaseAuthException catch (error) {
+      res = error.message.toString();
     } catch (error) {
       res = error.toString();
     }

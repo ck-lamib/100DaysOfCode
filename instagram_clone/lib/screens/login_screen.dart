@@ -1,8 +1,7 @@
-import 'dart:isolate';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
+import 'package:instagram_clone/screens/home_screen.dart';
 import 'package:instagram_clone/screens/signup_screen.dart';
 import 'package:instagram_clone/util/colors.dart';
 import 'package:instagram_clone/util/utils.dart';
@@ -31,12 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
-    String res = await AuthMethods().loginUser(
+    String res = await AuthMethods().loginUsers(
       email: _emailController.text,
       password: _passwordController.text,
     );
     if (res == 'success') {
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => const HomeScreen()));
     } else {
+      if (!mounted) return;
       showSnackBar(context, res);
     }
     setState(() {
