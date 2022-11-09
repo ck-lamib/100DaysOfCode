@@ -1,4 +1,3 @@
-import 'package:day1/items.dart';
 import 'package:day1/product.dart';
 import 'package:day1/shopping_list.dart';
 import 'package:flutter/material.dart';

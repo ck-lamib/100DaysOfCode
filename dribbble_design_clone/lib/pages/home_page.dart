@@ -1,5 +1,5 @@
 import 'package:dribbble_design_clone/pages/hell.dart';
-import 'package:dribbble_design_clone/pages/rough.dart';
+
 import 'package:dribbble_design_clone/widget/exercise_tile.dart';
 import 'package:dribbble_design_clone/widget/mood_icons.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void hel(value) {
-    print(value);
+    debugPrint(value);
   }
 
   @override
@@ -211,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                           //   exerciseTitle: "Running",
                           //   backColor: Colors.green,
                           // ),
-                          const ExerciseTile(
+                          ExerciseTile(
                             emoji: Icons.girl,
                             exerciseNum: 11,
                             exerciseTitle: "Bipin dai seceret",

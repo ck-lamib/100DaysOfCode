@@ -25,12 +25,12 @@ class MoodIcons extends StatelessWidget {
             style: const TextStyle(fontSize: 40),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         Text(
           reaction,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
           ),

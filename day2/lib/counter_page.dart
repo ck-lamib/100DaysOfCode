@@ -22,7 +22,7 @@ class _CounterPageState extends State<CounterPage> {
       child: Count(
         counter: _increment,
         count: value,
-        onCountSelected: () => print("The counter value is selected."),
+        onCountSelected: () => debugPrint("The counter value is selected."),
       ),
     );
   }
