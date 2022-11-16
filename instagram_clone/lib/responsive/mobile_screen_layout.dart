@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/util/colors.dart';
+import 'package:instagram_clone/util/global_variable.dart';
 // import 'package:instagram_clone/models/user.dart' as model;
 // import 'package:instagram_clone/providers/user_provider.dart';
 // import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class MobileScreenLayout extends StatefulWidget {
 }
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
-  int color = 0;
+  int _page = 0;
   late PageController pageController;
 
   @override
@@ -36,7 +37,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
 
   void onPageChanged(int page) {
     setState(() {
-      color = page;
+      _page = page;
     });
   }
 
@@ -64,16 +65,10 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     // model.User _user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       body: PageView(
-        children: [
-          Text("feed"),
-          Text("search"),
-          Text("add post"),
-          Text("notification"),
-          Text("profile"),
-        ],
         controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
         onPageChanged: onPageChanged,
+        children: homeScreenItems,
       ),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
@@ -81,7 +76,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home,
-              color: color == 0 ? primaryColor : secondaryColor,
+              color: _page == 0 ? primaryColor : secondaryColor,
             ),
             label: '',
             backgroundColor: primaryColor,
@@ -89,7 +84,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.search,
-              color: color == 1 ? primaryColor : secondaryColor,
+              color: _page == 1 ? primaryColor : secondaryColor,
             ),
             label: '',
             backgroundColor: primaryColor,
@@ -97,7 +92,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.add_circle,
-              color: color == 2 ? primaryColor : secondaryColor,
+              color: _page == 2 ? primaryColor : secondaryColor,
             ),
             label: '',
             backgroundColor: primaryColor,
@@ -105,7 +100,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.favorite,
-              color: color == 3 ? primaryColor : secondaryColor,
+              color: _page == 3 ? primaryColor : secondaryColor,
             ),
             label: '',
             backgroundColor: primaryColor,
@@ -113,7 +108,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.person,
-              color: color == 4 ? primaryColor : secondaryColor,
+              color: _page == 4 ? primaryColor : secondaryColor,
             ),
             label: '',
             backgroundColor: primaryColor,
