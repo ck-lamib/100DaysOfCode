@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:managing_state/parent_manages_state.dart';
 import 'package:managing_state/widget_manages_its_state.dart';
 
 void main() {
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        body: TapButton(),
+        body: ParentWidget(),
       ),
     );
   }
