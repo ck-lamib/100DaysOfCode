@@ -41,11 +41,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           /*3*/
-          Icon(
-            Icons.star,
-            color: Colors.red[500],
-          ),
-          const Text('41'),
+          const FavouriteWidget(),
         ],
       ),
     );
@@ -114,6 +110,41 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class FavouriteWidget extends StatefulWidget {
+  const FavouriteWidget({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _FavouriteWidgetState();
+}
+
+class _FavouriteWidgetState extends State<FavouriteWidget> {
+  void pressed(int value) {
+    setState(() {
+      _count += value;
+      _isFavourite = !(_isFavourite);
+    });
+  }
+
+  bool _isFavourite = true;
+  int _count = 41;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => _isFavourite ? pressed(-1) : pressed(1),
+          icon: Icon(
+            _isFavourite ? Icons.star : Icons.star_border,
+            color: Colors.red[500],
+          ),
+        ),
+        SizedBox(width: 18, child: Text("$_count")),
       ],
     );
   }
