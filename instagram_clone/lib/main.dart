@@ -4,12 +4,13 @@ import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
+
 import 'package:instagram_clone/responsive/mobile_screen_layout.dart';
 import 'package:instagram_clone/responsive/responsive_layout.dart';
 import 'package:instagram_clone/responsive/web_screen_layout.dart';
 import 'package:instagram_clone/screens/login_screen.dart';
 
-import 'package:instagram_clone/util/colors.dart';
+import 'package:instagram_clone/utils/colors.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -26,7 +27,7 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
-  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -63,7 +64,7 @@ class MyApp extends StatelessWidget {
                 );
               } else if (snapshot.hasError) {
                 return Scaffold(
-                  body: Center(child: Text('${snapshot.error}')),
+                  body: Center(child: Text('${snapshot.error} hello')),
                 );
               }
             } else if (snapshot.connectionState == ConnectionState.waiting) {

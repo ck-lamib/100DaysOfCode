@@ -1,93 +1,87 @@
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
 import 'package:instagram_clone/responsive/mobile_screen_layout.dart';
 import 'package:instagram_clone/responsive/responsive_layout.dart';
 import 'package:instagram_clone/responsive/web_screen_layout.dart';
 import 'package:instagram_clone/screens/login_screen.dart';
-import 'package:instagram_clone/util/colors.dart';
-import 'package:instagram_clone/util/utils.dart';
+import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widget/text_field.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final TextEditingController _userNameController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  Uint8List? _image;
+  final TextEditingController _bioController = TextEditingController();
   bool _isLoading = false;
+  Uint8List? _image;
 
   @override
   void dispose() {
     super.dispose();
-    _userNameController.dispose();
-    _bioController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-  }
-
-  void selectImage() async {
-    Uint8List im = await pickImage(ImageSource.gallery);
-    setState(() {
-      _image = im;
-    });
+    _usernameController.dispose();
   }
 
   void signUpUser() async {
+    // set loading to true
     setState(() {
       _isLoading = true;
     });
-    try {
-      String res = await AuthMethods().signUpUsers(
-        userName: _userNameController.text,
-        bio: _bioController.text,
-        password: _passwordController.text,
+
+    // signup user using our authmethodds
+    String res = await AuthMethods().signUpUser(
         email: _emailController.text,
-        file: _image!,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        file: _image!);
+    // if string returned is sucess, user has been created
+    if (res == "success") {
+      setState(() {
+        _isLoading = false;
+      });
+      // navigate to the home screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
       );
-      debugPrint(res);
-      if (res != 'success') {
-        if (!mounted) return;
-        showSnackBar(context, res);
-      } else {
-        if (!mounted) return;
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => const ResponsiveLayout(
-                  webScreenLayout: WebScreenLayout(),
-                  mobileScreenLayout: MobileScreenLayout(),
-                )));
-
-        setState(() {
-          showSnackBar(context, res);
-          _userNameController.clear();
-          _bioController.clear();
-          _emailController.clear();
-          _passwordController.clear();
-          _image = null;
-        });
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-      showSnackBar(context, "Please select valid image.");
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      // show the error
+      showSnackBar(context, res);
     }
+  }
 
+  selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+    // set state because we need to display the image we selected on the circle avatar
     setState(() {
-      _isLoading = false;
+      _image = im;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -99,127 +93,128 @@ class _SignupScreenState extends State<SignupScreen> {
                 flex: 2,
                 child: Container(),
               ),
-              //svg containing instagram
               SvgPicture.asset(
-                "assets/svg/ic_instagram.svg",
+                'assets/svg/ic_instagram.svg',
                 color: primaryColor,
                 height: 64,
               ),
-
-              const SizedBox(height: 64),
+              const SizedBox(
+                height: 64,
+              ),
               Stack(
                 children: [
                   _image != null
                       ? CircleAvatar(
+                          radius: 64,
                           backgroundImage: MemoryImage(_image!),
-                          radius: 45,
+                          backgroundColor: Colors.red,
                         )
                       : const CircleAvatar(
-                          backgroundColor: Colors.blue,
-                          backgroundImage: NetworkImage(
-                              "https://intlphotos.blob.core.windows.net/photos/np/de8f3fab-d81b-46a1-a42e-3f913b63b5a2.jpeg?0.855980300766803"),
-                          radius: 45,
+                          radius: 64,
+                          backgroundImage: NetworkImage('https://i.stack.imgur.com/l60Hf.png'),
+                          backgroundColor: Colors.red,
                         ),
                   Positioned(
                     bottom: -10,
-                    right: -10,
+                    left: 80,
                     child: IconButton(
-                      onPressed: () => selectImage(),
+                      onPressed: selectImage,
                       icon: const Icon(Icons.add_a_photo),
                     ),
-                  ),
+                  )
                 ],
               ),
-              const SizedBox(height: 64),
-
-              TextFieldInput(
-                textEditingController: _userNameController,
-                hinttext: "Username",
-                textInputType: TextInputType.emailAddress,
+              const SizedBox(
+                height: 24,
               ),
-              const SizedBox(height: 21),
-              //bio
               TextFieldInput(
-                textEditingController: _bioController,
-                hinttext: "Bio",
+                hinttext: 'Enter your username',
                 textInputType: TextInputType.text,
+                textEditingController: _usernameController,
               ),
-
-              const SizedBox(height: 21),
-              //email textbutton
+              const SizedBox(
+                height: 24,
+              ),
               TextFieldInput(
+                hinttext: 'Enter your email',
+                textInputType: TextInputType.emailAddress,
                 textEditingController: _emailController,
-                hinttext: "Phone number or email address",
-                textInputType: TextInputType.emailAddress,
               ),
-
-              const SizedBox(height: 21),
-
-              //password textbutton
+              const SizedBox(
+                height: 24,
+              ),
               TextFieldInput(
-                textEditingController: _passwordController,
-                hinttext: "Password",
+                hinttext: 'Enter your password',
                 textInputType: TextInputType.text,
+                textEditingController: _passwordController,
                 isPass: true,
               ),
-              const SizedBox(height: 32),
-
-              //sign in button
+              const SizedBox(
+                height: 24,
+              ),
+              TextFieldInput(
+                hinttext: 'Enter your bio',
+                textInputType: TextInputType.text,
+                textEditingController: _bioController,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
               InkWell(
-                onTap: () => signUpUser(),
+                onTap: signUpUser,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
                   width: double.infinity,
                   alignment: Alignment.center,
-                  // decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue),
-
-                  decoration: ShapeDecoration(
-                      color: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: primaryColor,
-                          ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: const ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    color: blueColor,
+                  ),
+                  child: !_isLoading
+                      ? const Text(
+                          'Sign up',
                         )
-                      : const Text("Sign up"),
+                      : const CircularProgressIndicator(
+                          color: primaryColor,
+                        ),
                 ),
               ),
-
-              const SizedBox(height: 21),
+              const SizedBox(
+                height: 12,
+              ),
               Flexible(
                 flex: 2,
                 child: Container(),
               ),
-
-              const Divider(
-                height: 2,
-                color: Colors.grey,
-              ),
-              const SizedBox(height: 21),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Already have an account? ",
-                    style: TextStyle(color: Colors.grey),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: const Text(
+                      'Already have an account?',
+                    ),
                   ),
                   GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return const LoginScreen();
-                      },
-                    )),
-                    child: Text(
-                      "Sign in.",
-                      style: TextStyle(color: Colors.blue[700]),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: const Text(
+                        ' Login.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ],
-              )
-              //signup
+              ),
             ],
           ),
         ),

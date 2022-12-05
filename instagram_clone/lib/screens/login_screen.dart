@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_clone/resources/auth_methods.dart';
-
+import 'package:instagram_clone/responsive/mobile_screen_layout.dart';
+import 'package:instagram_clone/responsive/responsive_layout.dart';
+import 'package:instagram_clone/responsive/web_screen_layout.dart';
 import 'package:instagram_clone/screens/signup_screen.dart';
-import 'package:instagram_clone/util/colors.dart';
-import 'package:instagram_clone/util/utils.dart';
+import 'package:instagram_clone/utils/colors.dart';
+import 'package:instagram_clone/utils/global_variable.dart';
+import 'package:instagram_clone/utils/utils.dart';
 import 'package:instagram_clone/widget/text_field.dart';
 
-import '../responsive/mobile_screen_layout.dart';
-import '../responsive/responsive_layout.dart';
-import '../responsive/web_screen_layout.dart';
-
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -34,32 +33,38 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
-    String res = await AuthMethods().loginUsers(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+    String res = await AuthMethods()
+        .loginUser(email: _emailController.text, password: _passwordController.text);
     if (res == 'success') {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const ResponsiveLayout(
-                webScreenLayout: WebScreenLayout(),
-                mobileScreenLayout: MobileScreenLayout(),
-              )));
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+          (route) => false);
+
+      setState(() {
+        _isLoading = false;
+      });
     } else {
-      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
       showSnackBar(context, res);
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: MediaQuery.of(context).size.width > webScreenSize
+              ? EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width / 3)
+              : const EdgeInsets.symmetric(horizontal: 32),
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,90 +73,86 @@ class _LoginScreenState extends State<LoginScreen> {
                 flex: 2,
                 child: Container(),
               ),
-              //svg containing instagram
               SvgPicture.asset(
-                "assets/svg/ic_instagram.svg",
+                'assets/svg/ic_instagram.svg',
                 color: primaryColor,
                 height: 64,
               ),
-
-              const SizedBox(height: 64),
-
-              const SizedBox(height: 64),
-
-              //email textbutton
-              TextFieldInput(
-                textEditingController: _emailController,
-                hinttext: "Phone number, email address or username",
-                textInputType: TextInputType.emailAddress,
+              const SizedBox(
+                height: 64,
               ),
-
-              const SizedBox(height: 21),
-              //password textbutton
               TextFieldInput(
-                textEditingController: _passwordController,
-                hinttext: "Password",
+                hinttext: 'Enter your email',
+                textInputType: TextInputType.emailAddress,
+                textEditingController: _emailController,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              TextFieldInput(
+                hinttext: 'Enter your password',
                 textInputType: TextInputType.text,
+                textEditingController: _passwordController,
                 isPass: true,
               ),
-              const SizedBox(height: 32),
-
-              //sign in button
+              const SizedBox(
+                height: 24,
+              ),
               InkWell(
-                onTap: () => loginUser(),
+                onTap: loginUser,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
                   width: double.infinity,
                   alignment: Alignment.center,
-                  // decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Colors.blue),
-
-                  decoration: ShapeDecoration(
-                      color: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: primaryColor,
-                          ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: const ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                    ),
+                    color: blueColor,
+                  ),
+                  child: !_isLoading
+                      ? const Text(
+                          'Log in',
                         )
-                      : const Text("Log in"),
+                      : const CircularProgressIndicator(
+                          color: primaryColor,
+                        ),
                 ),
               ),
-
-              const SizedBox(height: 21),
+              const SizedBox(
+                height: 12,
+              ),
               Flexible(
                 flex: 2,
                 child: Container(),
               ),
-
-              const Divider(
-                height: 2,
-                color: Colors.grey,
-              ),
-              const SizedBox(height: 21),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Don't have an account? ",
-                    style: TextStyle(color: Colors.grey),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: const Text(
+                      'Dont have an account?',
+                    ),
                   ),
                   GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return const SignupScreen();
-                      },
-                    )),
-                    child: Text(
-                      "Sign up.",
-                      style: TextStyle(color: Colors.blue[700]),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const SignupScreen(),
+                      ),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: const Text(
+                        ' Signup.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ],
-              )
-              //signup
+              ),
             ],
           ),
         ),
